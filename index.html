@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instructor Schedule with Reminders</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    padding:20px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+h1,h2{
+    text-align:center;
+    color:#2c3e50;
+    margin-bottom:15px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    margin-bottom:20px;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    text-align:center;
+}
+
+th{
+    background:#34495e;
+    color:white;
+    padding:12px;
+}
+
+td{
+    border:1px solid #ddd;
+    padding:12px;
+}
+
+.time{
+    background:#ecf0f1;
+    font-weight:bold;
+}
+
+.baps{
+    background:#27ae60;
+    color:white;
+    font-weight:bold;
+}
+
+.bscs{
+    background:#3498db;
+    color:white;
+    font-weight:bold;
+}
+
+.bsba{
+    background:#9b59b6;
+    color:white;
+    font-weight:bold;
+}
+
+.lunch{
+    background:#f39c12;
+    color:white;
+    font-weight:bold;
+}
+
+.class-card{
+    background:#f8f9fa;
+    border-left:5px solid #3498db;
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:8px;
+}
+
+.attendance-btn{
+    margin-top:10px;
+    background:#27ae60;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.attendance-btn:hover{
+    background:#219150;
+}
+
+.today-label{
+    background:#2ecc71;
+    color:white;
+    padding:8px;
+    border-radius:5px;
+    text-align:center;
+    margin-bottom:15px;
+}
+
+@media(max-width:768px){
+    table{
+        font-size:12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📚 Instructor Weekly Schedule</h1>
+
+<div class="card">
+
+<table>
+<thead>
+<tr>
+    <th>TIME</th>
+    <th>MONDAY</th>
+    <th>TUESDAY</th>
+    <th>WEDNESDAY</th>
+    <th>THURSDAY</th>
+    <th>FRIDAY</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+    <td class="time">8:00 - 9:00</td>
+    <td></td><td></td><td></td><td></td><td></td>
+</tr>
+
+<tr>
+    <td class="time">9:00 - 10:00</td>
+    <td class="baps">BAPS 3F</td>
+    <td></td>
+    <td class="baps">BAPS 3F</td>
+    <td></td>
+    <td class="baps">BAPS 3F</td>
+</tr>
+
+<tr>
+    <td class="time">9:00 - 10:30</td>
+    <td></td>
+    <td class="bscs">BSCS 2C</td>
+    <td></td>
+    <td class="bscs">BSCS 2C</td>
+    <td></td>
+</tr>
+
+<tr>
+    <td class="time">10:30 - 12:00</td>
+    <td></td>
+    <td class="bscs">BSCS 2D</td>
+    <td></td>
+    <td class="bscs">BSCS 2D</td>
+    <td></td>
+</tr>
+
+<tr>
+    <td class="time">10:00 - 11:00</td>
+    <td class="bscs">BSCS 2D</td>
+    <td></td>
+    <td class="bscs">BSCS 2D</td>
+    <td></td>
+    <td class="bscs">BSCS 2D</td>
+</tr>
+
+<tr>
+    <td class="time">12:00 - 1:00</td>
+    <td colspan="5" class="lunch">🍽️ LUNCH BREAK</td>
+</tr>
+
+<tr>
+    <td class="time">1:00 - 2:30</td>
+    <td></td>
+    <td class="bsba">BSBA 1A</td>
+    <td></td>
+    <td class="bsba">BSBA 1A</td>
+    <td></td>
+</tr>
+
+<tr>
+    <td class="time">2:30 - 4:00</td>
+    <td></td>
+    <td class="baps">BAPS 3D</td>
+    <td></td>
+    <td class="baps">BAPS 3D</td>
+    <td></td>
+</tr>
+
+<tr>
+    <td class="time">4:00 - 5:30</td>
+    <td></td>
+    <td class="bscs">BSCS 2A</td>
+    <td></td>
+    <td class="bscs">BSCS 2A</td>
+    <td></td>
+</tr>
+
+<tr>
+    <td class="time">5:30 - 8:30</td>
+    <td></td>
+    <td class="bsba">BSBA 1NC</td>
+    <td></td>
+    <td class="bsba">BSBA 1NC</td>
+    <td></td>
+</tr>
+
+</tbody>
+</table>
+
+</div>
+
+<div class="card">
+
+<h2>📅 Today's Classes</h2>
+
+<div id="todayName" class="today-label"></div>
+
+<div id="todayClasses"></div>
+
+</div>
+
+</div>
+
+<script>
+
+const schedule = {
+
+Monday: [
+    {time:"09:00", subject:"BAPS 3F"},
+    {time:"10:00", subject:"BSCS 2D"}
+],
+
+Tuesday: [
+    {time:"09:00", subject:"BSCS 2C"},
+    {time:"10:30", subject:"BSCS 2D"},
+    {time:"13:00", subject:"BSBA 1A"},
+    {time:"14:30", subject:"BAPS 3D"},
+    {time:"16:00", subject:"BSCS 2A"},
+    {time:"17:30", subject:"BSBA 1NC"}
+],
+
+Wednesday: [
+    {time:"09:00", subject:"BAPS 3F"},
+    {time:"10:00", subject:"BSCS 2D"}
+],
+
+Thursday: [
+    {time:"09:00", subject:"BSCS 2C"},
+    {time:"10:30", subject:"BSCS 2D"},
+    {time:"13:00", subject:"BSBA 1A"},
+    {time:"14:30", subject:"BAPS 3D"},
+    {time:"16:00", subject:"BSCS 2A"},
+    {time:"17:30", subject:"BSBA 1NC"}
+],
+
+Friday: [
+    {time:"09:00", subject:"BAPS 3F"},
+    {time:"10:00", subject:"BSCS 2D"}
+]
+
+};
+
+const days = [
+"Sunday",
+"Monday",
+"Tuesday",
+"Wednesday",
+"Thursday",
+"Friday",
+"Saturday"
+];
+
+const today = days[new Date().getDay()];
+
+document.getElementById("todayName").innerHTML =
+"Today is " + today;
+
+const container =
+document.getElementById("todayClasses");
+
+if(schedule[today]){
+
+    schedule[today].forEach(cls => {
+
+        container.innerHTML += `
+            <div class="class-card">
+
+                <h3>${cls.subject}</h3>
+
+                <p>
+                    <strong>Time:</strong>
+                    ${cls.time}
+                </p>
+
+                <button
+                    class="attendance-btn"
+                    onclick="markAttendance('${cls.subject}')">
+
+                    ✅ Attendance
+
+                </button>
+
+            </div>
+        `;
+    });
+
+}else{
+
+    container.innerHTML =
+    "<p>No classes scheduled today.</p>";
+
+}
+
+function markAttendance(subject){
+
+    alert(
+        "Opening attendance for: " +
+        subject
+    );
+
+    /*
+    Example for QR Attendance System
+
+    window.location.href =
+    "attendance.php?subject=" +
+    encodeURIComponent(subject);
+
+    */
+
+}
+
+const remindedClasses = [];
+
+setInterval(() => {
+
+    const now = new Date();
+
+    if(schedule[today]){
+
+        schedule[today].forEach(cls => {
+
+            const [hour, minute] =
+            cls.time.split(":");
+
+            let classTime = new Date();
+
+            classTime.setHours(hour);
+            classTime.setMinutes(minute);
+            classTime.setSeconds(0);
+
+            let minutesLeft =
+            Math.floor(
+                (classTime - now) / 60000
+            );
+
+            if(
+                minutesLeft <= 10 &&
+                minutesLeft >= 0 &&
+                !remindedClasses.includes(cls.subject)
+            ){
+
+                remindedClasses.push(
+                    cls.subject
+                );
+
+                alert(
+                    "🔔 CLASS REMINDER\n\n" +
+                    "Subject: " +
+                    cls.subject +
+                    "\nStarts at: " +
+                    cls.time +
+                    "\n\nPlease prepare attendance."
+                );
+
+            }
+
+        });
+
+    }
+
+}, 60000);
+
+</script>
+
+</body>
+</html>
